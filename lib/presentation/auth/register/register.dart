@@ -1,3 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/presentation/auth/sign_in/sign_in.dart';
 import '../../../constants/assets.dart';
@@ -16,7 +21,10 @@ class Register extends StatelessWidget {
     TextEditingController rePassword = TextEditingController();
     TextEditingController password = TextEditingController();
     GlobalKey<FormState> formkey = GlobalKey<FormState>();
+    GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
     return Scaffold(
+      key: _scaffoldKey,
       body: Padding(
         padding: const EdgeInsets.all(
           Constants.appPadding,
@@ -108,13 +116,13 @@ class Register extends StatelessWidget {
                 Row(
                   children: [
                     buildSocialLogin(
-                      icon: Assets.splashIcon,
+                      icon: Assets.googleIcon,
                     ),
                     const SizedBox(
                       width: 30,
                     ),
                     buildSocialLogin(
-                      icon: Assets.splashIcon,
+                      icon: Assets.facebookIcon,
                     ),
                   ],
                 ),
@@ -158,20 +166,40 @@ class Register extends StatelessWidget {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (formkey.currentState!.validate()) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => const Dialog(
-                            child: Text('Done'),
-                          ),
-                        ).then(
-                          (value) => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const Home(),
-                            ),
-                          ),
-                        );
+                        try {
+                          final credential = await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                                email: email.text,
+                                password: password.text,
+                              )
+                              .then(
+                                (value) => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const Home(),
+                                  ),
+                                ),
+                              );
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'weak-password') {
+                            buildSnackBar(
+                              context: context,
+                              error: 'The password provided is too weak',
+                            );
+                          } else if (e.code == 'email-already-in-use') {
+                            buildSnackBar(
+                              context: context,
+                              error:
+                                  'The account already exists for that email.',
+                            );
+                          }
+                        } catch (e) {
+                          buildSnackBar(
+                            context: context,
+                            error: e.toString(),
+                          );
+                        }
                       }
                     },
                     child: const Text(

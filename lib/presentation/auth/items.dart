@@ -34,3 +34,13 @@ Expanded buildSocialLogin({required String icon, Function()? onTap}) {
     ),
   );
 }
+
+buildSnackBar({required BuildContext context, required String error}) {
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        error,
+      ),
+    ),
+  );
+}

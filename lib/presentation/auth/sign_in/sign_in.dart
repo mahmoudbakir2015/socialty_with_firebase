@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../constants/assets.dart';
 import '../../../constants/constants.dart';
 import '../../../widget/default_text_form.dart';
@@ -11,6 +14,39 @@ class SignIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<UserCredential> signInWithFacebook() async {
+      // Trigger the sign-in flow
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+
+      // Create a credential from the access token
+      final OAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+      // Once signed in, return the UserCredential
+      return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    }
+
+    Future<UserCredential> signInWithGoogle() async {
+      final GoogleSignInAccount? googleUser =
+          await GoogleSignIn().signIn().then(
+                (value) => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Home(),
+                  ),
+                ),
+              );
+
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    }
+
     TextEditingController email = TextEditingController();
     TextEditingController password = TextEditingController();
     GlobalKey<FormState> formkey = GlobalKey<FormState>();
@@ -74,14 +110,23 @@ class SignIn extends StatelessWidget {
                 Row(
                   children: [
                     buildSocialLogin(
-                      icon: Assets.splashIcon,
+                      icon: Assets.googleIcon,
+                      onTap: () async {
+                        UserCredential userCredential =
+                            await signInWithGoogle();
+                        print(userCredential.credential?.accessToken);
+                      },
                     ),
                     const SizedBox(
                       width: 30,
                     ),
                     buildSocialLogin(
-                      icon: Assets.splashIcon,
-                    ),
+                        icon: Assets.facebookIcon,
+                        onTap: () async {
+                          UserCredential userCredential =
+                              await signInWithFacebook();
+                          print(userCredential.credential?.accessToken);
+                        }),
                   ],
                 ),
                 const SizedBox(
@@ -119,13 +164,36 @@ class SignIn extends StatelessWidget {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (formkey.currentState!.validate()) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const Home(),
-                          ),
-                        );
+                        try {
+                          final credential = await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                                email: email.text,
+                                password: password.text,
+                              )
+                              .then(
+                                (value) => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const Home(),
+                                  ),
+                                ),
+                              );
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'user-not-found') {
+                            // ignore: use_build_context_synchronously
+                            buildSnackBar(
+                              context: context,
+                              error: 'No user found for that email.',
+                            );
+                          } else if (e.code == 'wrong-password') {
+                            // ignore: use_build_context_synchronously
+                            buildSnackBar(
+                              context: context,
+                              error: 'Wrong password provided for that user.',
+                            );
+                          }
+                        }
                       }
                     },
                     child: const Text(
