@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../../constants/assets.dart';
 import '../../../constants/constants.dart';
 import '../../../widget/default_text_form.dart';
+import '../../home/home_view.dart';
+import '../items.dart';
 import '../register/register.dart';
 
 class SignIn extends StatelessWidget {
@@ -16,9 +19,9 @@ class SignIn extends StatelessWidget {
         padding: const EdgeInsets.all(
           Constants.appPadding,
         ),
-        child: SingleChildScrollView(
-          child: Form(
-            key: formkey,
+        child: Form(
+          key: formkey,
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -65,7 +68,24 @@ class SignIn extends StatelessWidget {
                   },
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
+                ),
+                buildDivider(),
+                Row(
+                  children: [
+                    buildSocialLogin(
+                      icon: Assets.splashIcon,
+                    ),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    buildSocialLogin(
+                      icon: Assets.splashIcon,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -93,7 +113,7 @@ class SignIn extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 SizedBox(
                   width: double.infinity,
@@ -101,10 +121,9 @@ class SignIn extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       if (formkey.currentState!.validate()) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => const Dialog(
-                            child: Text('Done'),
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const Home(),
                           ),
                         );
                       }
