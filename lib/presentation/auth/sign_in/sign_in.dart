@@ -10,6 +10,7 @@ class SignIn extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController email = TextEditingController();
     TextEditingController password = TextEditingController();
+    GlobalKey<FormState> formkey = GlobalKey<FormState>();
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(
@@ -17,6 +18,7 @@ class SignIn extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           child: Form(
+            key: formkey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -38,7 +40,13 @@ class SignIn extends StatelessWidget {
                   controller: email,
                   textInputType: TextInputType.emailAddress,
                   iconData: Icons.email,
-                  onValidate: (String? value) {},
+                  onValidate: (String? value) {
+                    if (value!.isEmpty) {
+                      return "this field shouldn't be empty";
+                    } else {
+                      return null;
+                    }
+                  },
                 ),
                 const SizedBox(
                   height: 20,
@@ -48,7 +56,13 @@ class SignIn extends StatelessWidget {
                   controller: password,
                   textInputType: TextInputType.visiblePassword,
                   iconData: Icons.lock,
-                  onValidate: (String? value) {},
+                  onValidate: (String? value) {
+                    if (value!.isEmpty) {
+                      return "this field shouldn't be empty";
+                    } else {
+                      return null;
+                    }
+                  },
                 ),
                 const SizedBox(
                   height: 20,
@@ -85,7 +99,16 @@ class SignIn extends StatelessWidget {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (formkey.currentState!.validate()) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const Dialog(
+                            child: Text('Done'),
+                          ),
+                        );
+                      }
+                    },
                     child: const Text(
                       'Sign Now',
                     ),
