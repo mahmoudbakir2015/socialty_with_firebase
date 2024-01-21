@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "586105931196",
+    "project_id": "socialty-20bef",
+    "storage_bucket": "socialty-20bef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586105931196:android:13d095635de3f465dbd7b9",
+        "android_client_info": {
+          "package_name": "com.example.socialty_with_firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBr4HOnBNzyW48vdCpQsvcdSD5TdQWotA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
