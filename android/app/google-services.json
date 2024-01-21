@@ -12,7 +12,20 @@
           "package_name": "com.example.socialty_with_firebase"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "586105931196-3thsu7svapjvtnlsai1tmo6rnsl76oo7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.socialty_with_firebase",
+            "certificate_hash": "5d33b8043bb39aab57361d040a20477dec79dc16"
+          }
+        },
+        {
+          "client_id": "586105931196-valao8e4hac7d5nog65qt11cp48ovhf0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCBr4HOnBNzyW48vdCpQsvcdSD5TdQWotA"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586105931196-4nqdt2fa3t65gd5t63nrkolau3o76r84.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
