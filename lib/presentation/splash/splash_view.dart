@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:socialty_with_firebase/constants/assets.dart';
 
+import '../auth/sign_in/sign_in.dart';
+
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
@@ -14,10 +16,16 @@ class _SplashViewState extends State<SplashView> {
   void initState() {
     Future.delayed(
       const Duration(
-        seconds: 5,
+        seconds: 3,
       ),
     ).then(
-      (value) => null,
+      (value) => Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SignIn(),
+        ),
+        (route) => false,
+      ),
     );
     super.initState();
   }
