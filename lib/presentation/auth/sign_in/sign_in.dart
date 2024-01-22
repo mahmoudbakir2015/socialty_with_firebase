@@ -6,7 +6,7 @@ import 'package:socialty_with_firebase/shared/cache_helper.dart';
 import '../../../constants/assets.dart';
 import '../../../constants/constants.dart';
 import '../../../widget/default_text_form.dart';
-import '../../home/home_view.dart';
+import '../../main_screen/main_screen.dart';
 import '../items.dart';
 import '../register/register.dart';
 
@@ -36,7 +36,7 @@ class SignIn extends StatelessWidget {
         );
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) => const Home(),
+            builder: (context) => const MainScreen(),
           ),
           (route) => false,
         );
@@ -190,7 +190,7 @@ class SignIn extends StatelessWidget {
                                 value: value.credential!.accessToken);
                             Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                builder: (context) => const Home(),
+                                builder: (context) => const MainScreen(),
                               ),
                               (route) => false,
                             );

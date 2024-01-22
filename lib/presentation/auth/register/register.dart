@@ -1,7 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/presentation/auth/sign_in/sign_in.dart';
@@ -9,7 +6,7 @@ import '../../../constants/assets.dart';
 import '../../../constants/constants.dart';
 import '../../../shared/cache_helper.dart';
 import '../../../widget/default_text_form.dart';
-import '../../home/home_view.dart';
+import '../../main_screen/main_screen.dart';
 import '../items.dart';
 
 class Register extends StatelessWidget {
@@ -181,7 +178,7 @@ class Register extends StatelessWidget {
                             );
                             Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                builder: (context) => const Home(),
+                                builder: (context) => const MainScreen(),
                               ),
                               (route) => false,
                             );

@@ -18,7 +18,7 @@ class CacheHelper {
 
   static dynamic getData({
     required String key,
-  }) async {
+  }) {
     return sharedPreferences?.get(
       key,
     );
