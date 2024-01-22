@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/presentation/auth/sign_in/sign_in.dart';
 import '../../../constants/assets.dart';
 import '../../../constants/constants.dart';
+import '../../../shared/cache_helper.dart';
 import '../../../widget/default_text_form.dart';
 import '../../home/home_view.dart';
 import '../items.dart';
@@ -21,10 +22,8 @@ class Register extends StatelessWidget {
     TextEditingController rePassword = TextEditingController();
     TextEditingController password = TextEditingController();
     GlobalKey<FormState> formkey = GlobalKey<FormState>();
-    GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
     return Scaffold(
-      key: _scaffoldKey,
       body: Padding(
         padding: const EdgeInsets.all(
           Constants.appPadding,
@@ -169,18 +168,24 @@ class Register extends StatelessWidget {
                     onPressed: () async {
                       if (formkey.currentState!.validate()) {
                         try {
+                          // ignore: unused_local_variable
                           final credential = await FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
-                                email: email.text,
-                                password: password.text,
-                              )
-                              .then(
-                                (value) => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => const Home(),
-                                  ),
-                                ),
-                              );
+                            email: email.text,
+                            password: password.text,
+                          )
+                              .then((value) {
+                            CacheHelper.saveData(
+                              key: 'token',
+                              value: value.credential!.accessToken,
+                            );
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                builder: (context) => const Home(),
+                              ),
+                              (route) => false,
+                            );
+                          });
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
                             buildSnackBar(

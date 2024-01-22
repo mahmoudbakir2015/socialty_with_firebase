@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:socialty_with_firebase/constants/assets.dart';
 
+import '../../shared/cache_helper.dart';
 import '../auth/sign_in/sign_in.dart';
 
 class SplashView extends StatefulWidget {
@@ -18,15 +19,17 @@ class _SplashViewState extends State<SplashView> {
       const Duration(
         seconds: 3,
       ),
-    ).then(
-      (value) => Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const SignIn(),
-        ),
-        (route) => false,
-      ),
-    );
+    ).then((value) {
+      if (CacheHelper.getData(key: 'token') != null) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SignIn(),
+          ),
+          (route) => false,
+        );
+      } else {}
+    });
     super.initState();
   }
 
