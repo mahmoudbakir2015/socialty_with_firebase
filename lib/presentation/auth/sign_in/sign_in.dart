@@ -178,7 +178,13 @@ class SignIn extends StatelessWidget {
                                     builder: (context) => const Home(),
                                   ),
                                 ),
-                              );
+                              )
+                              .catchError((error) {
+                            buildSnackBar(
+                              context: context,
+                              error: error.toString(),
+                            );
+                          });
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'user-not-found') {
                             // ignore: use_build_context_synchronously
