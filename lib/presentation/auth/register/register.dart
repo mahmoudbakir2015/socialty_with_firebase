@@ -172,37 +172,42 @@ class Register extends StatelessWidget {
                             email: email.text,
                             password: password.text,
                           )
-                              .then((value) {
+                              .then((user) {
                             CacheHelper.saveData(
                               key: 'token',
-                              value: value.user!.uid,
-                            );
-
-                            users
-                                .doc(value.user!.uid)
-                                .set({
-                                  'name': name.text,
-                                  'email': email.text,
-                                  'imgPic': '',
-                                  'freinds': [],
-                                })
+                              value: user.user!.uid,
+                            )
                                 .then(
-                                  (value) =>
-                                      Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                      builder: (context) => const MainScreen(),
-                                    ),
-                                    (route) => false,
-                                  ),
+                                  (value) => users
+                                      .doc(user.user!.uid)
+                                      .set({
+                                        'name': name.text,
+                                        'email': email.text,
+                                        'imgPic': '',
+                                        'freinds': [],
+                                      })
+                                      .then(
+                                        (value) => Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                            builder: (context) => MainScreen(
+                                              uid: user.user!.uid,
+                                            ),
+                                          ),
+                                          (route) => false,
+                                        ),
+                                      )
+                                      .catchError(
+                                        (error) {
+                                          buildSnackBar(
+                                            context: context,
+                                            error:
+                                                '=========>${error.toString()}',
+                                          );
+                                        },
+                                      ),
                                 )
-                                .catchError(
-                                  (error) {
-                                    buildSnackBar(
-                                      context: context,
-                                      error: '=========>${error.toString()}',
-                                    );
-                                  },
-                                );
+                                .catchError((error) {});
                           }).catchError((error) {
                             buildSnackBar(
                               context: context,

@@ -1,12 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
 import 'package:socialty_with_firebase/presentation/home/home_view.dart';
+import 'package:socialty_with_firebase/shared/cache_helper.dart';
 import '../chat/chat.dart';
 import '../profile/profile.dart';
 import '../search/search.dart';
 
+// ignore: must_be_immutable
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final String uid;
+  const MainScreen({
+    Key? key,
+    required this.uid,
+  }) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -14,10 +21,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
-  List<Widget> screens = const [
-    Home(),
-    Chat(),
-    Profile(),
+  List<Widget> screens = [
+    Home(
+      uid: CacheHelper.getData(key: 'token').toString(),
+    ),
+    const Chat(),
+    const Profile(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -64,7 +73,7 @@ class _MainScreenState extends State<MainScreen> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'MainScreen',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),

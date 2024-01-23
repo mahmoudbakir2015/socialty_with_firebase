@@ -31,35 +31,38 @@ class SignIn extends StatelessWidget {
 
     Future<UserCredential> signInWithGoogle() async {
       final GoogleSignInAccount? googleUser =
-          await GoogleSignIn().signIn().then((value) {
+          await GoogleSignIn().signIn().then((user) {
         CacheHelper.saveData(
           key: 'token',
-          value: value!.id,
-        );
-        users
-            .doc(value.id)
-            .set({
-              'name': value.displayName,
-              'email': value.email,
-              'imgPic': '',
-              'freinds': [],
-            })
-            .then(
-              (value) => Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) => const MainScreen(),
+          value: user!.id,
+        ).then(
+          (value) => users
+              .doc(user.id)
+              .set({
+                'name': user.displayName,
+                'email': user.email,
+                'imgPic': '',
+                'freinds': [],
+              })
+              .then(
+                (value) => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => MainScreen(
+                      uid: user.id.toString(),
+                    ),
+                  ),
+                  (route) => false,
                 ),
-                (route) => false,
+              )
+              .catchError(
+                (error) {
+                  buildSnackBar(
+                    context: context,
+                    error: error.toString(),
+                  );
+                },
               ),
-            )
-            .catchError(
-              (error) {
-                buildSnackBar(
-                  context: context,
-                  error: error.toString(),
-                );
-              },
-            );
+        );
       }).catchError((error) {
         buildSnackBar(
           context: context,
@@ -200,15 +203,29 @@ class SignIn extends StatelessWidget {
                             email: email.text,
                             password: password.text,
                           )
-                              .then((value) {
+                              .then((user) {
                             CacheHelper.saveData(
-                                key: 'token',
-                                value: value.credential!.accessToken);
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (context) => const MainScreen(),
+                                    key: 'token',
+                                    value: user.credential!.accessToken)
+                                .then(
+                              (value) => Navigator.of(context)
+                                  .pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (context) => MainScreen(
+                                    uid:
+                                        user.credential!.accessToken.toString(),
+                                  ),
+                                ),
+                                (route) => false,
+                              )
+                                  .catchError(
+                                (error) {
+                                  buildSnackBar(
+                                    context: context,
+                                    error: error.toString(),
+                                  );
+                                },
                               ),
-                              (route) => false,
                             );
                           }).catchError((error) {
                             buildSnackBar(

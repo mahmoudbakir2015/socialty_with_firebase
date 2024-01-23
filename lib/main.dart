@@ -15,10 +15,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          color: Colors.black,
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       title: 'Scoiality',
-      home: SplashView(),
+      home: const SplashView(),
     );
   }
 }

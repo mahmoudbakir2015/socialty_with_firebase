@@ -14,9 +14,9 @@ Card buildPostInfo({
   required Function()? onShare,
   String? postText,
   String? postImg,
-  String numLike = '0',
-  String numComment = '0',
-  String numShare = '0',
+  String? numLike = '0',
+  String? numComment = '0',
+  String? numShare = '0',
 }) {
   return Card(
     child: Padding(
@@ -119,9 +119,9 @@ InkWell buildPostButton({
 }
 
 Row buildNumOfLike({
-  required String like,
-  required String comment,
-  required String share,
+  String? like,
+  String? comment,
+  String? share,
 }) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,7 +130,7 @@ Row buildNumOfLike({
         textDirection: TextDirection.rtl,
         '$comment تعليقا' ' ' '$share مشاركة',
       ),
-      Text('🌝 $like')
+      Text('❤ $like')
     ],
   );
 }
@@ -200,13 +200,16 @@ Row buildOwnerPost({
 
 InkWell buildMakePost({
   required BuildContext context,
+  required String uid,
   required String imgPic,
 }) {
   return InkWell(
     onTap: () {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const MakePost(),
+          builder: (context) => MakePost(
+            uid: uid,
+          ),
         ),
       );
     },

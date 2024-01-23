@@ -1,8 +1,15 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:socialty_with_firebase/presentation/home/items.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final String uid;
+  const Home({
+    Key? key,
+    required this.uid,
+  }) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -10,14 +17,19 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isTap = false;
+
   @override
   Widget build(BuildContext context) {
+    var user =
+        FirebaseFirestore.instance.collection('users').doc(widget.uid).get();
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
         buildMakePost(
           context: context,
-          imgPic: '',
+          imgPic:
+              user.then((value) => value.data()!['img'].toString()).toString(),
+          uid: widget.uid,
         ),
         const SizedBox(
           height: 10,
