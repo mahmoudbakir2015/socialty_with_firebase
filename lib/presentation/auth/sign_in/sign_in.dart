@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -15,6 +16,7 @@ class SignIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
     Future<UserCredential> signInWithFacebook() async {
       // Trigger the sign-in flow
       final LoginResult loginResult = await FacebookAuth.instance.login();
@@ -29,11 +31,34 @@ class SignIn extends StatelessWidget {
 
     Future<UserCredential> signInWithGoogle() async {
       final GoogleSignInAccount? googleUser =
-          await GoogleSignIn().signIn().then((value) {
+          await GoogleSignIn().signIn().then((value) async {
         CacheHelper.saveData(
           key: 'token',
           value: value!.id,
         );
+        await users
+            .add({
+              'name': value.displayName,
+              'email': value.email,
+              'imgPic': '',
+              'freinds': [],
+            })
+            .then(
+              (value) => Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => const MainScreen(),
+                ),
+                (route) => false,
+              ),
+            )
+            .catchError(
+              (error) {
+                buildSnackBar(
+                  context: context,
+                  error: error.toString(),
+                );
+              },
+            );
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => const MainScreen(),

@@ -8,6 +8,7 @@ import '../../../shared/cache_helper.dart';
 import '../../../widget/default_text_form.dart';
 import '../../main_screen/main_screen.dart';
 import '../items.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Register extends StatelessWidget {
   const Register({super.key});
@@ -19,6 +20,7 @@ class Register extends StatelessWidget {
     TextEditingController rePassword = TextEditingController();
     TextEditingController password = TextEditingController();
     GlobalKey<FormState> formkey = GlobalKey<FormState>();
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     return Scaffold(
       body: Padding(
@@ -171,17 +173,35 @@ class Register extends StatelessWidget {
                             email: email.text,
                             password: password.text,
                           )
-                              .then((value) {
+                              .then((value) async {
                             CacheHelper.saveData(
                               key: 'token',
                               value: value.credential!.accessToken,
                             );
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (context) => const MainScreen(),
-                              ),
-                              (route) => false,
-                            );
+                            await users
+                                .add({
+                                  'name': name.text,
+                                  'email': email.text,
+                                  'imgPic': '',
+                                  'freinds': [],
+                                })
+                                .then(
+                                  (value) =>
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                      builder: (context) => const MainScreen(),
+                                    ),
+                                    (route) => false,
+                                  ),
+                                )
+                                .catchError(
+                                  (error) {
+                                    buildSnackBar(
+                                      context: context,
+                                      error: error.toString(),
+                                    );
+                                  },
+                                );
                           });
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
