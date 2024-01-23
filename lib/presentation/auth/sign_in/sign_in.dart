@@ -31,13 +31,14 @@ class SignIn extends StatelessWidget {
 
     Future<UserCredential> signInWithGoogle() async {
       final GoogleSignInAccount? googleUser =
-          await GoogleSignIn().signIn().then((value) async {
+          await GoogleSignIn().signIn().then((value) {
         CacheHelper.saveData(
           key: 'token',
           value: value!.id,
         );
-        await users
-            .add({
+        users
+            .doc(value.id)
+            .set({
               'name': value.displayName,
               'email': value.email,
               'imgPic': '',
@@ -59,12 +60,6 @@ class SignIn extends StatelessWidget {
                 );
               },
             );
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => const MainScreen(),
-          ),
-          (route) => false,
-        );
       }).catchError((error) {
         buildSnackBar(
           context: context,
@@ -148,9 +143,7 @@ class SignIn extends StatelessWidget {
                     buildSocialLogin(
                       icon: Assets.googleIcon,
                       onTap: () async {
-                        UserCredential userCredential =
-                            await signInWithGoogle();
-                        print(userCredential.credential?.accessToken);
+                        await signInWithGoogle();
                       },
                     ),
                     const SizedBox(
@@ -159,9 +152,7 @@ class SignIn extends StatelessWidget {
                     buildSocialLogin(
                         icon: Assets.facebookIcon,
                         onTap: () async {
-                          UserCredential userCredential =
-                              await signInWithFacebook();
-                          print(userCredential.credential?.accessToken);
+                          await signInWithFacebook();
                         }),
                   ],
                 ),

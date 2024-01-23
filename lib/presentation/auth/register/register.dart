@@ -81,7 +81,7 @@ class Register extends StatelessWidget {
                 defaultTextForm(
                   label: 'password',
                   controller: password,
-                  textInputType: TextInputType.emailAddress,
+                  textInputType: TextInputType.visiblePassword,
                   iconData: Icons.email,
                   onValidate: (String? value) {
                     if (value!.isEmpty) {
@@ -167,19 +167,20 @@ class Register extends StatelessWidget {
                     onPressed: () async {
                       if (formkey.currentState!.validate()) {
                         try {
-                          // ignore: unused_local_variable
-                          final credential = await FirebaseAuth.instance
+                          await FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
                             email: email.text,
                             password: password.text,
                           )
-                              .then((value) async {
+                              .then((value) {
                             CacheHelper.saveData(
                               key: 'token',
-                              value: value.credential!.accessToken,
+                              value: value.user!.uid,
                             );
-                            await users
-                                .add({
+
+                            users
+                                .doc(value.user!.uid)
+                                .set({
                                   'name': name.text,
                                   'email': email.text,
                                   'imgPic': '',
@@ -198,10 +199,15 @@ class Register extends StatelessWidget {
                                   (error) {
                                     buildSnackBar(
                                       context: context,
-                                      error: error.toString(),
+                                      error: '=========>${error.toString()}',
                                     );
                                   },
                                 );
+                          }).catchError((error) {
+                            buildSnackBar(
+                              context: context,
+                              error: error.toString(),
+                            );
                           });
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'weak-password') {
