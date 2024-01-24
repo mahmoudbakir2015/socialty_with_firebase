@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:socialty_with_firebase/constants/assets.dart';
@@ -23,7 +21,6 @@ class _SplashViewState extends State<SplashView> {
       ),
     ).then((value) {
       if (CacheHelper.getData(key: 'token') != null) {
-        log(CacheHelper.getData(key: 'token').toString());
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

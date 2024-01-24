@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +18,28 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isTap = false;
+  @override
+  void initState() {
+    getPosts();
+    super.initState();
+  }
+
+  getPosts() async {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(widget.uid)
+        .collection('posts')
+        .snapshots()
+        .listen((event) {
+      event.docs.forEach((element) {
+        log(element.data().toString());
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    bool isTap = false;
     var user =
         FirebaseFirestore.instance.collection('users').doc(widget.uid).get();
     return ListView(
@@ -41,7 +61,7 @@ class _HomeState extends State<Home> {
             return buildPostInfo(
               postWriter: 'MahmoudBakir',
               time: '10 sec',
-              imgPic: '',
+              imgPic: 'https://wallpapercave.com/wp/wp2568544.jpg',
               isOnline: true,
               isTap: isTap,
               postText: null,
