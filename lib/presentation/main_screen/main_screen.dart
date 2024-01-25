@@ -5,7 +5,7 @@ import 'package:socialty_with_firebase/presentation/home/home_view.dart';
 import 'package:socialty_with_firebase/shared/cache_helper.dart';
 import '../chat/chat.dart';
 import '../profile/profile.dart';
-import '../search/search.dart';
+import '../search/search_view.dart';
 
 // ignore: must_be_immutable
 class MainScreen extends StatefulWidget {

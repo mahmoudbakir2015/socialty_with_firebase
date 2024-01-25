@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:socialty_with_firebase/constants/constants.dart';
 import 'package:socialty_with_firebase/presentation/chat/chat_details/chat_details.dart';
+import '../../widget/search.dart';
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
@@ -10,28 +10,16 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  String searched = '';
   @override
   Widget build(BuildContext context) {
-    String searched = '';
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
-        Padding(
-          padding: const EdgeInsets.all(Constants.appPadding),
-          child: TextFormField(
-            onChanged: (String? value) {
-              searched = value.toString();
-              print(searched);
-            },
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  Constants.appPadding,
-                ),
-              ),
-            ),
-          ),
-        ),
+        buildSearch(onChanged: (String value) {
+          setState(() {});
+          searched = value.toString();
+        }),
         (searched == '')
             ? ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),
