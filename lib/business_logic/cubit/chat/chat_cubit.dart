@@ -11,12 +11,12 @@ class ChatCubit extends Cubit<ChateStates> {
         );
   static ChatCubit get(context) => BlocProvider.of(context);
 
-  void sendMessage({
-    required String recieverId,
-    required String senderId,
-    required String text,
-    required String dateTime,
-  }) {
+  void sendMessage(
+      {required String recieverId,
+      required String senderId,
+      required String text,
+      required String dateTime,
+      required ScrollController scrollController}) {
     MessageModel model = MessageModel(
       dateTime: dateTime,
       receiverId: recieverId,
@@ -43,12 +43,14 @@ class ChatCubit extends Cubit<ChateStates> {
                 model.toMap(),
               ),
         )
-        .then(
-          (value) => emit(
-            SendMessageSuccessedState(),
-          ),
-        )
-        .catchError((error) {
+        .then((value) {
+      scrollToBottom(
+        scrollController: scrollController,
+      );
+      emit(
+        SendMessageSuccessedState(),
+      );
+    }).catchError((error) {
       emit(SendMessageFailedState());
     });
   }

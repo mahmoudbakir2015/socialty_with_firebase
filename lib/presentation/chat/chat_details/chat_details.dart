@@ -20,6 +20,7 @@ class ChatDetails extends StatefulWidget {
 
 class _ChatDetailsState extends State<ChatDetails> {
   TextEditingController sendMessages = TextEditingController();
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -78,6 +79,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                       context: context,
                       controller: sendMessages,
                       receiverId: widget.uid,
+                      scrollController: scrollController,
                     ),
                   ],
                 ),

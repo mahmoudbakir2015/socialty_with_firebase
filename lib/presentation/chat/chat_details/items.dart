@@ -119,19 +119,24 @@ buildSenderMessage(MessageModel messageModel) {
           ),
         ),
       ),
-      Text(
-        messageModel.dateTime!,
-        // style: MyTextStyle.tR10,
-      ),
+      Text(messageModel.dateTime
+              .toString()
+              .characters
+              .take(16)
+              .toString()
+              .replaceAll(' ', ' ,Time:')
+
+          // style: MyTextStyle.tR10,
+          ),
     ],
   );
 }
 
-buildFooter({
-  required String receiverId,
-  required BuildContext context,
-  required TextEditingController controller,
-}) {
+buildFooter(
+    {required String receiverId,
+    required BuildContext context,
+    required TextEditingController controller,
+    required ScrollController scrollController}) {
   return Container(
     clipBehavior: Clip.antiAliasWithSaveLayer,
     height: 40,
@@ -160,11 +165,11 @@ buildFooter({
                 text: controller.text,
                 recieverId: receiverId,
                 senderId: CacheHelper.getData(key: 'token').toString(),
-                dateTime:
-                    '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} , ${DateTime.now().hour}:${DateTime.now().minute}',
+                dateTime: DateTime.now().toString(),
+                scrollController: scrollController,
                 // receiverId: receiverId,
               );
-              print('sended');
+
               controller.text = '';
             }
           },
