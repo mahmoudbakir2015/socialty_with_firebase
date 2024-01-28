@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
+import 'package:socialty_with_firebase/presentation/home/home_view.dart';
+import 'package:socialty_with_firebase/presentation/main_screen/main_screen.dart';
 
 class MakePost extends StatefulWidget {
   final String uid;
@@ -50,9 +51,9 @@ class _MakePostState extends State<MakePost> {
     return Scaffold(
       appBar: AppBar(
         leading: TextButton(
-          onPressed: () async {
+          onPressed: () {
             if (post.text != '') {
-              await FirebaseFirestore.instance
+              FirebaseFirestore.instance
                   .collection('posts')
                   .doc(widget.uid)
                   .collection('posts')
@@ -63,7 +64,16 @@ class _MakePostState extends State<MakePost> {
                 'numOfLike': '0',
                 'numOfComment': '0',
                 'numOfShare': '0',
-              });
+              }).then(
+                (value) => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => MainScreen(
+                      uid: widget.uid,
+                    ),
+                  ),
+                  (route) => false,
+                ),
+              );
             }
           },
           child: const Text(
@@ -75,7 +85,14 @@ class _MakePostState extends State<MakePost> {
           Center(
             child: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => MainScreen(
+                      uid: widget.uid,
+                    ),
+                  ),
+                  (route) => false,
+                );
               },
               icon: const Icon(
                 Icons.close,

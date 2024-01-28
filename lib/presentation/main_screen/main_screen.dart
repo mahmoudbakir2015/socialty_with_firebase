@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
+import 'package:socialty_with_firebase/presentation/auth/sign_in/sign_in.dart';
 import 'package:socialty_with_firebase/presentation/home/home_view.dart';
 import 'package:socialty_with_firebase/shared/cache_helper.dart';
 import '../chat/chat.dart';
@@ -45,21 +47,96 @@ class _MainScreenState extends State<MainScreen> {
             Icons.search,
           ),
         ),
-        actions: const [
+        title: (currentIndex == 2)
+            ? const Text(
+                'Profile',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            : const Text(''),
+        actions: [
           Center(
             child: Padding(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: Constants.appPadding,
               ),
               child: Text(
-                'Sociality',
-                style: TextStyle(
+                (currentIndex == 2) ? '' : 'Sociality',
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
+          (currentIndex == 2)
+              ? Padding(
+                  padding: const EdgeInsets.all(
+                    Constants.appPadding,
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          actionsAlignment: MainAxisAlignment.spaceEvenly,
+                          content: const Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Are you sure to exit ?',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                'Cancel',
+                              ),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                CacheHelper.clearData(key: 'token').then(
+                                  (value) async => await FirebaseAuth.instance
+                                      .signOut()
+                                      .then(
+                                        (value) => Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SignIn(),
+                                          ),
+                                          (route) => false,
+                                        ),
+                                      ),
+                                );
+                              },
+                              child: const Text(
+                                'SignOut',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: const Icon(
+                      Icons.exit_to_app,
+                      color: Colors.red,
+                    ),
+                  ),
+                )
+              : const Text('')
         ],
       ),
       body: screens[currentIndex],
