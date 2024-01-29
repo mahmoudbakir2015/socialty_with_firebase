@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
-import 'package:socialty_with_firebase/presentation/home/home_view.dart';
 import 'package:socialty_with_firebase/presentation/main_screen/main_screen.dart';
 
 class MakePost extends StatefulWidget {

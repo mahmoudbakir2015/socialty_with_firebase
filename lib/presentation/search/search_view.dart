@@ -1,8 +1,8 @@
 import 'dart:developer';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
-import 'package:socialty_with_firebase/presentation/chat/chat_details/chat_details.dart';
+import 'package:socialty_with_firebase/presentation/search/items.dart';
 import 'package:socialty_with_firebase/widget/search.dart';
 
 class Search extends StatefulWidget {
@@ -13,8 +13,9 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  String search = '';
   bool isAddFriend = false;
+  Stream<QuerySnapshot>? usersStream;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,73 +26,52 @@ class _SearchState extends State<Search> {
             buildSearch(
               onChanged: (String value) {
                 setState(() {});
-                search = value.toString();
-                log(search);
+                usersStream = FirebaseFirestore.instance
+                    .collection('users')
+                    .where('name', isEqualTo: value.toString())
+                    .snapshots();
               },
             ),
-            (search == '')
-                ? const Center(
-                    child: Text('Search to see ....'),
-                  )
-                : buildSearchedCard(
-                    image: 'https://wallpapercave.com/wp/wp2568544.jpg',
-                  )
-          ],
-        ),
-      ),
-    );
-  }
-
-  InkWell buildSearchedCard({
-    required String image,
-  }) {
-    return InkWell(
-      onTap: () {},
-      child: Card(
-        child: Row(
-          children: [
-            Expanded(
-              child: Image(
-                image: NetworkImage(
-                  image,
-                ),
-                fit: BoxFit.fitHeight,
-              ),
-            ),
-            Expanded(
-              child: Column(
-                children: [
-                  FilledButton(
-                    onPressed: () {
-                      isAddFriend = !isAddFriend;
-                      setState(() {});
-                    },
+            StreamBuilder<QuerySnapshot>(
+              stream: usersStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
                     child: Text(
-                      isAddFriend ? 'sended add' : 'Add Friend',
+                      'Something went wrong',
                     ),
-                  ),
-                  OutlinedButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const ChatDetails(
-                            uid: '78510',
-                          ),
-                        ),
+                  );
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasData) {
+                  return ListView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children:
+                        snapshot.data!.docs.map((DocumentSnapshot document) {
+                      Map<String, dynamic> data =
+                          document.data()! as Map<String, dynamic>;
+                      log(data['imgPic'].toString());
+                      return SearchCard(
+                        image: data['imgPic'].toString(),
+                        uid: data['uid'].toString(),
                       );
-                    },
-                    child: const Text(
-                      'Chat',
-                      style: TextStyle(
-                        color: Colors.blue,
-                      ),
+                    }).toList(),
+                  );
+                } else {
+                  return const Center(
+                    child: Text(
+                      'Search now ......',
                     ),
-                  ),
-                ],
-              ),
+                  );
+                }
+              },
             ),
           ],
         ),

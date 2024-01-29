@@ -185,6 +185,7 @@ class Register extends StatelessWidget {
                                         'email': email.text,
                                         'imgPic': '',
                                         'freinds': [],
+                                        'uid': user.user!.uid,
                                       })
                                       .then(
                                         (value) => Navigator.of(context)

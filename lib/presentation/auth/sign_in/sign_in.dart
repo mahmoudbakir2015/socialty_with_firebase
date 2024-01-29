@@ -43,6 +43,7 @@ class SignIn extends StatelessWidget {
                 'email': user.email,
                 'imgPic': '',
                 'freinds': [],
+                'uid': user.id,
               })
               .then(
                 (value) => Navigator.of(context).pushAndRemoveUntil(
