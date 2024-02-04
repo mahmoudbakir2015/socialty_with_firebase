@@ -7,6 +7,8 @@ import '../../../data/model/message_model.dart';
 
 buildAppBar({
   required BuildContext context,
+  required String img,
+  required String name,
 }) {
   return AppBar(
     titleSpacing: 0,
@@ -20,17 +22,20 @@ buildAppBar({
         }),
     backgroundColor: Colors.white,
     elevation: 0,
-    title: const Row(
+    title: Row(
       children: [
         CircleAvatar(
-          backgroundImage:
-              NetworkImage('https://wallpapercave.com/wp/wp2568544.jpg'),
+          backgroundImage: NetworkImage(img),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 8),
+          padding: const EdgeInsets.only(
+            left: 8,
+          ),
           child: Text(
-            'name',
-            style: TextStyle(color: Colors.black),
+            name,
+            style: const TextStyle(
+              color: Colors.black,
+            ),
           ),
         ),
       ],
@@ -41,10 +46,9 @@ buildAppBar({
 buildRecievedMessage(MessageModel messageModel, {required String img}) {
   return Row(
     children: [
-      const CircleAvatar(
+      CircleAvatar(
         radius: 15,
-        backgroundImage:
-            NetworkImage('https://wallpapercave.com/wp/wp2568544.jpg'),
+        backgroundImage: NetworkImage(img),
       ),
       const SizedBox(
         width: 10,

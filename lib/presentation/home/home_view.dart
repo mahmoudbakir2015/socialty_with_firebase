@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 
 import 'package:socialty_with_firebase/presentation/home/items.dart';
 
+// ignore: must_be_immutable
 class Home extends StatefulWidget {
   final String uid;
-  const Home({
+  String img = '';
+  Home({
     Key? key,
     required this.uid,
   }) : super(key: key);
@@ -21,6 +23,15 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     getPosts();
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.uid)
+        .get()
+        .then((value) {
+      setState(() {});
+
+      widget.img = value.data()!['imgPic'].toString();
+    });
     super.initState();
   }
 
@@ -40,15 +51,13 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     bool isTap = false;
-    var user =
-        FirebaseFirestore.instance.collection('users').doc(widget.uid).get();
+
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
         buildMakePost(
           context: context,
-          imgPic:
-              user.then((value) => value.data()!['img'].toString()).toString(),
+          imgPic: widget.img,
           uid: widget.uid,
         ),
         const SizedBox(

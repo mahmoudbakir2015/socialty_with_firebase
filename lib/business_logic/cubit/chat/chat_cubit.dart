@@ -23,6 +23,7 @@ class ChatCubit extends Cubit<ChateStates> {
       senderId: senderId,
       text: text,
     );
+
     FirebaseFirestore.instance
         .collection('chats')
         .doc(senderId)
