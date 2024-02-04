@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
+import 'package:socialty_with_firebase/presentation/profile/items.dart';
 import '../../widget/build_post.dart';
 import '../../widget/default_text_form.dart';
 import '../../widget/make_post.dart';
@@ -47,7 +46,6 @@ class _ProfileState extends State<Profile> {
       widget.posts = [];
       event.docs.forEach((element) {
         widget.posts.add(element.data());
-        // log(element.data().toString());
       });
     });
   }
@@ -67,7 +65,10 @@ class _ProfileState extends State<Profile> {
           child: Stack(
             children: [
               buildCover(),
-              buildImgProfile(context),
+              buildImgProfile(
+                context: context,
+                image: widget.img,
+              ),
             ],
           ),
         ),
@@ -180,76 +181,6 @@ class _ProfileState extends State<Profile> {
           itemCount: widget.posts.length,
         ),
       ],
-    );
-  }
-
-  Padding buildName({required String name, void Function()? onTap}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8.0,
-      ),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              name,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-            InkWell(
-              onTap: onTap,
-              child: const Icon(
-                Icons.edit,
-                color: Colors.blue,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Positioned buildImgProfile(BuildContext context) {
-    return Positioned(
-      top: 140,
-      left: MediaQuery.of(context).size.width / 2 - 60,
-      child: CircleAvatar(
-        radius: 60,
-        child: ClipOval(
-          child: Image(
-            fit: BoxFit.cover,
-            height: double.infinity,
-            width: double.infinity,
-            image: NetworkImage(
-              widget.img,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  InkWell buildCover() {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        width: double.infinity,
-        height: 200,
-        color: Colors.red,
-        child: const Image(
-          fit: BoxFit.cover,
-          image: NetworkImage(
-            Constants.imgTest,
-          ),
-        ),
-      ),
     );
   }
 }
