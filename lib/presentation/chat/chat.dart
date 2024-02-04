@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/presentation/chat/chat_details/chat_details.dart';
+import 'package:socialty_with_firebase/presentation/chat/items.dart';
 import 'package:socialty_with_firebase/shared/cache_helper.dart';
 import '../../widget/search.dart';
 
@@ -103,35 +104,6 @@ class _ChatState extends State<Chat> {
                 itemCount: 2,
               ),
       ],
-    );
-  }
-
-  ListTile buildchatCircle({
-    required String image,
-    required String name,
-    required String lastMessage,
-    required Function()? onTap,
-  }) {
-    return ListTile(
-      onTap: onTap,
-      leading: CircleAvatar(
-        radius: 30,
-        backgroundImage: NetworkImage(
-          image,
-        ),
-      ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(name),
-          Text(
-            lastMessage,
-            style: const TextStyle(
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
