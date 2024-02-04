@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:socialty_with_firebase/constants/constants.dart';
 import 'package:socialty_with_firebase/presentation/chat/chat_details/chat_details.dart';
 import 'package:socialty_with_firebase/presentation/chat/items.dart';
 import 'package:socialty_with_firebase/shared/cache_helper.dart';
@@ -65,7 +66,7 @@ class _ChatState extends State<Chat> {
                         ),
                       );
                     },
-                    image: 'https://wallpapercave.com/wp/wp2568544.jpg',
+                    image: Constants.imgTest,
                     name: 'mahmoudbakir',
                     lastMessage: 'hello',
                   );
@@ -82,7 +83,7 @@ class _ChatState extends State<Chat> {
                 shrinkWrap: true,
                 itemBuilder: (ctx, index) {
                   return buildchatCircle(
-                    image: 'https://wallpapercave.com/wp/wp2568544.jpg',
+                    image: Constants.imgTest,
                     name: 'mahmoudbakir',
                     lastMessage: 'hello',
                     onTap: () {
