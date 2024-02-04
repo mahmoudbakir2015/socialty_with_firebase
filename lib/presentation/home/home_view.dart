@@ -3,13 +3,15 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import 'package:socialty_with_firebase/presentation/home/items.dart';
+import 'package:socialty_with_firebase/constants/constants.dart';
+import '../../widget/build_post.dart';
+import '../../widget/make_post.dart';
 
 // ignore: must_be_immutable
 class Home extends StatefulWidget {
   final String uid;
   String img = '';
+  String name = '';
   Home({
     Key? key,
     required this.uid,
@@ -23,14 +25,12 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     getPosts();
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.uid)
-        .get()
-        .then((value) {
-      setState(() {});
-
-      widget.img = value.data()!['imgPic'].toString();
+    FirebaseFirestore.instance.collection('users').snapshots().listen((event) {
+      event.docs.forEach((element) {
+        setState(() {});
+        widget.img = element.data()['imgPic'].toString();
+        widget.name = element.data()['name'].toString();
+      });
     });
     super.initState();
   }
@@ -59,6 +59,7 @@ class _HomeState extends State<Home> {
           context: context,
           imgPic: widget.img,
           uid: widget.uid,
+          name: widget.name,
         ),
         const SizedBox(
           height: 10,
@@ -70,7 +71,7 @@ class _HomeState extends State<Home> {
             return buildPostInfo(
               postWriter: 'MahmoudBakir',
               time: '10 sec',
-              imgPic: 'https://wallpapercave.com/wp/wp2568544.jpg',
+              imgPic: Constants.imgTest,
               isOnline: true,
               isTap: isTap,
               postText: null,

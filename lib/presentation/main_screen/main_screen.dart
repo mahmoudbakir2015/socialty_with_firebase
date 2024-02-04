@@ -28,7 +28,9 @@ class _MainScreenState extends State<MainScreen> {
       uid: CacheHelper.getData(key: 'token').toString(),
     ),
     const Chat(),
-    const Profile(),
+    Profile(
+      uid: CacheHelper.getData(key: 'token').toString(),
+    ),
   ];
   @override
   Widget build(BuildContext context) {

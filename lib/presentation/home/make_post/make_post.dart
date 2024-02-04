@@ -5,7 +5,8 @@ import 'package:socialty_with_firebase/presentation/main_screen/main_screen.dart
 
 class MakePost extends StatefulWidget {
   final String uid;
-  const MakePost({super.key, required this.uid});
+  final String name;
+  const MakePost({super.key, required this.uid, required this.name});
 
   @override
   State<MakePost> createState() => _MakePostState();
@@ -14,39 +15,9 @@ class MakePost extends StatefulWidget {
 class _MakePostState extends State<MakePost> {
   bool onTap = false;
   bool isImage = false;
-
-  // void initState() {
-  //   super.initState();
-  //   showModalBottomSheet(
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(30.0),
-  //     ),
-  //     isScrollControlled: false,
-  //     isDismissible: true,
-  //     backgroundColor: Colors.white,
-  //     context: context,
-  //     builder: (context) =>
-  //     DraggableScrollableSheet(
-  //       initialChildSize: 0.4,
-  //       minChildSize: 0.2,
-  //       maxChildSize: 0.6,
-  //       builder: (context, scrollController) {
-  //         return SingleChildScrollView(
-  //           controller: scrollController,
-  //           child: Container(
-  //             color: Colors.blue,
-  //             height: 300,
-  //             width: 200,
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
-
+  TextEditingController post = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    TextEditingController post = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         leading: TextButton(
@@ -100,55 +71,51 @@ class _MakePostState extends State<MakePost> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(Constants.appPadding),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  children: [
-                    Text('Mahmoudbakir'),
-                  ],
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                CircleAvatar(),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(Constants.appPadding),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    children: [
+                      Text(widget.name),
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const CircleAvatar(),
+                ],
+              ),
             ),
-          ),
-          TextFormField(
-            onTap: () {
-              onTap = true;
-              setState(() {});
-            },
-            onTapOutside: (PointerDownEvent v) {
-              onTap = false;
-              setState(() {});
-            },
-            controller: post,
-            textDirection: TextDirection.rtl,
-            autofocus: true,
-            maxLines: 15,
-            decoration: const InputDecoration(
-              enabledBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              hintText: 'بم تفكر ؟',
+            TextFormField(
+              onTap: () {
+                onTap = true;
+                setState(() {});
+              },
+              onTapOutside: (PointerDownEvent v) {
+                onTap = false;
+                setState(() {});
+              },
+              controller: post,
+              textDirection: TextDirection.rtl,
+              autofocus: true,
+              maxLines: 15,
+              decoration: const InputDecoration(
+                enabledBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                hintText: 'بم تفكر ؟',
+              ),
             ),
-          ),
-          Expanded(
-            flex: 3,
-            child: (isImage == true)
+            (isImage == true)
                 ? const Image(
                     image: NetworkImage(''),
                   )
                 : const Text(''),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
+            Container(
               decoration: BoxDecoration(
                 color: Colors.grey[300],
                 borderRadius: const BorderRadius.only(
@@ -175,8 +142,8 @@ class _MakePostState extends State<MakePost> {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
