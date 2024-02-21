@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -36,7 +37,7 @@ class SignIn extends StatelessWidget {
           key: 'token',
           value: user!.id,
         ).then(
-          (value) => users
+          (value) async => users
               .doc(user.id)
               .set({
                 'name': user.displayName,
@@ -44,6 +45,7 @@ class SignIn extends StatelessWidget {
                 'imgPic': '',
                 'freinds': [],
                 'uid': user.id,
+                'Fcm': await FirebaseMessaging.instance.getToken(),
               })
               .then(
                 (value) => Navigator.of(context).pushAndRemoveUntil(

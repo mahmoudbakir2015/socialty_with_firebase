@@ -9,6 +9,7 @@ import '../../../widget/default_text_form.dart';
 import '../../main_screen/main_screen.dart';
 import '../items.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Register extends StatelessWidget {
   const Register({super.key});
@@ -178,7 +179,7 @@ class Register extends StatelessWidget {
                               value: user.user!.uid,
                             )
                                 .then(
-                                  (value) => users
+                                  (value) async => users
                                       .doc(user.user!.uid)
                                       .set({
                                         'name': name.text,
@@ -186,6 +187,8 @@ class Register extends StatelessWidget {
                                         'imgPic': '',
                                         'freinds': [],
                                         'uid': user.user!.uid,
+                                        'Fcm': await FirebaseMessaging.instance
+                                            .getToken(),
                                       })
                                       .then(
                                         (value) => Navigator.of(context)
