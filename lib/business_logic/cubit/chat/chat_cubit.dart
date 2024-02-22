@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialty_with_firebase/business_logic/cubit/chat/chat_states.dart';
 import 'package:socialty_with_firebase/data/model/message_model.dart';
+import 'package:socialty_with_firebase/shared/dio_helper.dart';
 
 class ChatCubit extends Cubit<ChateStates> {
   ChatCubit()
@@ -44,7 +45,30 @@ class ChatCubit extends Cubit<ChateStates> {
                 model.toMap(),
               ),
         )
-        .then((value) {
+        .then((value) async {
+      String title = '';
+      String to = '';
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(recieverId)
+          .get()
+          .then((DocumentSnapshot ds) {
+        title = ds['name'];
+        to = ds['Fcm'];
+        print(title);
+        print(to);
+      });
+
+      await DioHelper.postData(
+        body: model.text.toString(),
+        title: title.toString(),
+        to: to.toString(),
+        data: <String, dynamic>{
+          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          'id': '1',
+          'status': 'done'
+        },
+      );
       scrollToBottom(
         scrollController: scrollController,
       );

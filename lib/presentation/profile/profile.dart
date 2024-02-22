@@ -25,12 +25,14 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     getPosts();
-    FirebaseFirestore.instance.collection('users').snapshots().listen((event) {
-      event.docs.forEach((element) {
-        setState(() {});
-        widget.img = element.data()['imgPic'].toString();
-        widget.name = element.data()['name'].toString();
-      });
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.uid)
+        .snapshots()
+        .listen((event) {
+      setState(() {});
+      widget.img = event.get('imgPic').toString();
+      widget.name = event.get('name').toString();
     });
 
     super.initState();

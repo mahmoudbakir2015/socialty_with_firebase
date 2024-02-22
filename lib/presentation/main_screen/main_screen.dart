@@ -105,8 +105,9 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ),
                             OutlinedButton(
-                              onPressed: () {
-                                CacheHelper.clearData(key: 'token').then(
+                              onPressed: () async {
+                                // await CacheHelper.removeData(key: key).then((value) => null)
+                                await CacheHelper.clearData(key: 'token').then(
                                   (value) async => await FirebaseAuth.instance
                                       .signOut()
                                       .then(

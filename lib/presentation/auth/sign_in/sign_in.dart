@@ -208,9 +208,9 @@ class SignIn extends StatelessWidget {
                           )
                               .then((user) {
                             CacheHelper.saveData(
-                                    key: 'token',
-                                    value: user.credential!.accessToken)
-                                .then(
+                              key: 'token',
+                              value: user.credential!.accessToken,
+                            ).then(
                               (value) => Navigator.of(context)
                                   .pushAndRemoveUntil(
                                 MaterialPageRoute(
