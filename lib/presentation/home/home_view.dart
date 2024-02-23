@@ -82,7 +82,7 @@ class _HomeState extends State<Home> {
             return buildPostInfo(
               postWriter: 'MahmoudBakir',
               time: '10 sec',
-              imgPic: Constants.imgTest,
+              imgPic: Constants.imgWall,
               isOnline: true,
               isTap: isTap,
               postText: null,

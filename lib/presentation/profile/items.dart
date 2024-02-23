@@ -66,7 +66,7 @@ InkWell buildCover() {
       child: const Image(
         fit: BoxFit.cover,
         image: NetworkImage(
-          Constants.imgTest,
+          Constants.imgWall,
         ),
       ),
     ),

@@ -1,10 +1,17 @@
+// import 'dart:developer';
+import 'dart:io';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
 import 'package:socialty_with_firebase/presentation/profile/items.dart';
 import '../../widget/build_post.dart';
 import '../../widget/default_text_form.dart';
 import '../../widget/make_post.dart';
+import 'package:image_picker/image_picker.dart';
 
 // ignore: must_be_immutable
 class Profile extends StatefulWidget {
@@ -53,6 +60,59 @@ class _ProfileState extends State<Profile> {
   }
 
   bool isTap = false;
+  File? file;
+
+  var imagePicker = ImagePicker();
+  saveImageToStorage(
+      {required bool isAvatar, required String imagePath}) async {
+    if (isAvatar == true) {
+      var refStorage = FirebaseStorage.instance
+          .ref('images')
+          .child('avatar')
+          .child(imagePath);
+      await refStorage.putFile(file!);
+      var url = refStorage.getDownloadURL();
+      // log(url.toString());
+    } else {
+      var refStorage =
+          FirebaseStorage.instance.ref('images').child('wall').child(imagePath);
+      await refStorage.putFile(file!);
+      var url = refStorage.getDownloadURL();
+      // log(url.toString());
+    }
+  }
+
+  uploadImage({required bool isCamera, required bool isAvatar}) async {
+    if (isCamera == true) {
+      var imagePicked = await imagePicker.pickImage(source: ImageSource.camera);
+      if (imagePicked != null) {
+        file = File(imagePicked.path);
+        // log(imagePicked.path);
+        var nameImage = basename(imagePicked.path);
+        // log(nameImage);
+        // start upload
+        saveImageToStorage(isAvatar: isAvatar, imagePath: nameImage);
+
+        //end upload
+      } else {}
+    } else {
+      var imagePicked =
+          await imagePicker.pickImage(source: ImageSource.gallery);
+      if (imagePicked != null) {
+        file = File(imagePicked.path);
+        // log(imagePicked.path);
+        var nameImage = basename(imagePicked.path);
+        // log(nameImage);
+        var random = Random().nextInt(100000000);
+        nameImage = '$random$nameImage';
+        // start upload
+        saveImageToStorage(isAvatar: isAvatar, imagePath: nameImage);
+
+        //end upload
+      } else {}
+    }
+  }
+
   TextEditingController controllerName = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -66,10 +126,51 @@ class _ProfileState extends State<Profile> {
           height: 260,
           child: Stack(
             children: [
-              buildCover(),
-              buildImgProfile(
-                context: context,
-                image: widget.img,
+              Stack(
+                children: [
+                  buildCover(),
+                  Positioned(
+                    bottom: 20,
+                    right: 20,
+                    child: InkWell(
+                      onTap: () {
+                        buildBottomSheet(context: context, isAvatar: false);
+                      },
+                      child: const CircleAvatar(
+                        backgroundColor: Colors.black,
+                        radius: 20,
+                        child: Icon(
+                          Icons.add,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Stack(
+                children: [
+                  buildImgProfile(
+                    context: context,
+                    image: widget.img,
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    child: InkWell(
+                      onTap: () {
+                        buildBottomSheet(context: context, isAvatar: true);
+                      },
+                      child: const CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.black,
+                        child: Icon(
+                          Icons.add,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -184,5 +285,51 @@ class _ProfileState extends State<Profile> {
         ),
       ],
     );
+  }
+
+  Future<dynamic> buildBottomSheet(
+      {required BuildContext context, required bool isAvatar}) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return SizedBox(
+            height: 100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                InkWell(
+                  onTap: () {
+                    uploadImage(
+                      isAvatar: isAvatar,
+                      isCamera: true,
+                    );
+                  },
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(Icons.camera),
+                      Text('camera'),
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    uploadImage(
+                      isAvatar: isAvatar,
+                      isCamera: false,
+                    );
+                  },
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(Icons.image),
+                      Text('gallery'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

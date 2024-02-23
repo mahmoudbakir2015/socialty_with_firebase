@@ -66,7 +66,7 @@ class _ChatState extends State<Chat> {
                         ),
                       );
                     },
-                    image: Constants.imgTest,
+                    image: Constants.imgWall,
                     name: 'mahmoudbakir',
                     lastMessage: 'hello',
                   );
@@ -83,7 +83,7 @@ class _ChatState extends State<Chat> {
                 shrinkWrap: true,
                 itemBuilder: (ctx, index) {
                   return buildchatCircle(
-                    image: Constants.imgTest,
+                    image: Constants.imgWall,
                     name: 'mahmoudbakir',
                     lastMessage: 'hello',
                     onTap: () {
