@@ -1,7 +1,5 @@
-// import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +37,9 @@ class _ProfileState extends State<Profile> {
         .snapshots()
         .listen((event) {
       setState(() {});
-      widget.imgWall = event.get('imgWall').toString();
-      widget.imgProfile = event.get('imgProfile').toString();
+
+      widget.imgWall = event.get('imageWall').toString();
+      widget.imgProfile = event.get('imageProfile').toString();
       widget.name = event.get('name').toString();
     });
 
@@ -73,13 +72,25 @@ class _ProfileState extends State<Profile> {
           .child('avatar')
           .child(imagePath);
       await refStorage.putFile(file!);
-      var url = refStorage.getDownloadURL();
+      var url = await refStorage.getDownloadURL();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .update({
+        'imageProfile': url,
+      });
       // log(url.toString());
     } else {
       var refStorage =
           FirebaseStorage.instance.ref('images').child('wall').child(imagePath);
       await refStorage.putFile(file!);
-      var url = refStorage.getDownloadURL();
+      var url = await refStorage.getDownloadURL();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .update({
+        'imageWall': url,
+      });
       // log(url.toString());
     }
   }

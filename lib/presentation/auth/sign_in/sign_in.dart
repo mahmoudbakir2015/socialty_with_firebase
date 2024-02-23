@@ -42,7 +42,8 @@ class SignIn extends StatelessWidget {
               .set({
                 'name': user.displayName,
                 'email': user.email,
-                'imgPic': '',
+                'imageProfile': '',
+                'imageWall': '',
                 'freinds': [],
                 'uid': user.id,
                 'Fcm': await FirebaseMessaging.instance.getToken(),

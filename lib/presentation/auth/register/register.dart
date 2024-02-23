@@ -184,7 +184,8 @@ class Register extends StatelessWidget {
                                       .set({
                                         'name': name.text,
                                         'email': email.text,
-                                        'imgPic': '',
+                                        'imageProfile': '',
+                                        'imageWall': '',
                                         'freinds': [],
                                         'uid': user.user!.uid,
                                         'Fcm': await FirebaseMessaging.instance

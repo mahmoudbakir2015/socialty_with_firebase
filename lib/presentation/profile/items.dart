@@ -47,7 +47,7 @@ Positioned buildImgProfile({required BuildContext context, String? image}) {
           height: double.infinity,
           width: double.infinity,
           image: NetworkImage(
-            image ?? Constants.imgProfile,
+            (image == null) ? Constants.imgProfile : image,
           ),
         ),
       ),
