@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:socialty_with_firebase/constants/constants.dart';
 
 Card buildPostInfo({
   required String postWriter,
   required String time,
-  required String imgPic,
+  String? imgPic,
   required bool isOnline,
   bool isTap = false,
   required Function()? close,
@@ -44,7 +45,7 @@ Card buildPostInfo({
               buildOwnerPost(
                 name: postWriter,
                 time: time,
-                imgPic: imgPic,
+                imgPic: imgPic ?? Constants.imgProfile,
                 status: isOnline,
               ),
             ],

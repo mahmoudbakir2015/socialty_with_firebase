@@ -35,8 +35,7 @@ Padding buildName({required String name, void Function()? onTap}) {
   );
 }
 
-Positioned buildImgProfile(
-    {required BuildContext context, required String image}) {
+Positioned buildImgProfile({required BuildContext context, String? image}) {
   return Positioned(
     top: 140,
     left: MediaQuery.of(context).size.width / 2 - 60,
@@ -48,7 +47,7 @@ Positioned buildImgProfile(
           height: double.infinity,
           width: double.infinity,
           image: NetworkImage(
-            image,
+            image ?? Constants.imgProfile,
           ),
         ),
       ),
@@ -56,17 +55,17 @@ Positioned buildImgProfile(
   );
 }
 
-InkWell buildCover() {
+InkWell buildCover({String? image}) {
   return InkWell(
     onTap: () {},
     child: Container(
       width: double.infinity,
       height: 200,
       color: Colors.red,
-      child: const Image(
+      child: Image(
         fit: BoxFit.cover,
         image: NetworkImage(
-          Constants.imgWall,
+          image ?? Constants.imgWall,
         ),
       ),
     ),

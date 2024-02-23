@@ -16,7 +16,8 @@ import 'package:image_picker/image_picker.dart';
 // ignore: must_be_immutable
 class Profile extends StatefulWidget {
   final String uid;
-  String img = '';
+  String? imgWall;
+  String? imgProfile;
   String name = '';
   List posts = [];
   Profile({
@@ -38,7 +39,8 @@ class _ProfileState extends State<Profile> {
         .snapshots()
         .listen((event) {
       setState(() {});
-      widget.img = event.get('imgPic').toString();
+      widget.imgWall = event.get('imgWall').toString();
+      widget.imgProfile = event.get('imgProfile').toString();
       widget.name = event.get('name').toString();
     });
 
@@ -128,7 +130,7 @@ class _ProfileState extends State<Profile> {
             children: [
               Stack(
                 children: [
-                  buildCover(),
+                  buildCover(image: widget.imgWall),
                   Positioned(
                     bottom: 20,
                     right: 20,
@@ -151,7 +153,7 @@ class _ProfileState extends State<Profile> {
                 children: [
                   buildImgProfile(
                     context: context,
-                    image: widget.img,
+                    image: widget.imgProfile,
                   ),
                   Positioned(
                     bottom: 0,
@@ -245,7 +247,7 @@ class _ProfileState extends State<Profile> {
         ),
         buildMakePost(
           context: context,
-          imgPic: widget.img,
+          imgPic: widget.imgProfile,
           uid: widget.uid,
           name: widget.name,
         ),
@@ -256,7 +258,7 @@ class _ProfileState extends State<Profile> {
             return buildPostInfo(
               postWriter: widget.name,
               time: widget.posts[index]['date'],
-              imgPic: widget.img,
+              imgPic: widget.imgProfile,
               isOnline: true,
               isTap: isTap,
               postText: widget.posts[index]['text'],
