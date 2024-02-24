@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
-
 import '../presentation/home/make_post/make_post.dart';
 
 InkWell buildMakePost({
   required BuildContext context,
   required String uid,
-  String? imgPic,
+  String imgPic = '',
   required String name,
 }) {
   return InkWell(
@@ -16,6 +15,7 @@ InkWell buildMakePost({
           builder: (context) => MakePost(
             uid: uid,
             name: name,
+            image: imgPic,
           ),
         ),
       );
@@ -29,7 +29,9 @@ InkWell buildMakePost({
           children: [Text('بم تفكر ؟')],
         ),
         trailing: CircleAvatar(
-          backgroundImage: NetworkImage(imgPic ?? Constants.imgProfile),
+          backgroundImage: NetworkImage(
+            (imgPic == '') ? Constants.imgProfile : imgPic,
+          ),
         ),
       ),
     ),

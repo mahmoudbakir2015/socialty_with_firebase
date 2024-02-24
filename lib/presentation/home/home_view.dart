@@ -11,8 +11,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 // ignore: must_be_immutable
 class Home extends StatefulWidget {
   final String uid;
-  String img = '';
-  String name = '';
+
   Home({
     Key? key,
     required this.uid,
@@ -23,6 +22,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String img = '';
+  String name = '';
   @override
   void initState() {
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
@@ -36,12 +37,14 @@ class _HomeState extends State<Home> {
     });
 
     getPosts();
-    FirebaseFirestore.instance.collection('users').snapshots().listen((event) {
-      event.docs.forEach((element) {
-        setState(() {});
-        widget.img = element.data()['imgPic'].toString();
-        widget.name = element.data()['name'].toString();
-      });
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.uid)
+        .snapshots()
+        .listen((event) {
+      setState(() {});
+      img = event.get('imageProfile');
+      name = event.get('name');
     });
     super.initState();
   }
@@ -68,9 +71,9 @@ class _HomeState extends State<Home> {
       children: [
         buildMakePost(
           context: context,
-          imgPic: widget.img,
+          imgPic: img,
           uid: widget.uid,
-          name: widget.name,
+          name: name,
         ),
         const SizedBox(
           height: 10,

@@ -6,7 +6,13 @@ import 'package:socialty_with_firebase/presentation/main_screen/main_screen.dart
 class MakePost extends StatefulWidget {
   final String uid;
   final String name;
-  const MakePost({super.key, required this.uid, required this.name});
+  final String image;
+  const MakePost({
+    super.key,
+    required this.uid,
+    required this.name,
+    required this.image,
+  });
 
   @override
   State<MakePost> createState() => _MakePostState();
@@ -87,7 +93,9 @@ class _MakePostState extends State<MakePost> {
                   const SizedBox(
                     width: 10,
                   ),
-                  const CircleAvatar(),
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(widget.image),
+                  ),
                 ],
               ),
             ),
