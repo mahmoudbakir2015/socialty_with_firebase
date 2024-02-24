@@ -7,7 +7,7 @@ import '../../../data/model/message_model.dart';
 
 buildAppBar({
   required BuildContext context,
-  required String img,
+  String img = '',
   required String name,
 }) {
   return AppBar(
@@ -25,7 +25,8 @@ buildAppBar({
     title: Row(
       children: [
         CircleAvatar(
-          backgroundImage: NetworkImage(img),
+          backgroundImage:
+              NetworkImage((img == '') ? Constants.imgProfile : img),
         ),
         Padding(
           padding: const EdgeInsets.only(

@@ -37,7 +37,7 @@ class _ChatDetailsState extends State<ChatDetails> {
         .get()
         .then((value) {
       setState(() {});
-      widget.image = value.data()!['imgPic'].toString();
+      widget.image = value.data()!['imageProfile'].toString();
       widget.userName = value.data()!['name'].toString();
     });
     super.initState();
