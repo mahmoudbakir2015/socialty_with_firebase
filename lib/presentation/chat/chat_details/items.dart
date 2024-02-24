@@ -2,7 +2,6 @@ import 'package:flutter/Material.dart';
 import 'package:socialty_with_firebase/business_logic/cubit/chat/chat_cubit.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
 import 'package:socialty_with_firebase/shared/cache_helper.dart';
-
 import '../../../data/model/message_model.dart';
 
 buildAppBar({
@@ -44,12 +43,12 @@ buildAppBar({
   );
 }
 
-buildRecievedMessage(MessageModel messageModel, {required String img}) {
+buildRecievedMessage(MessageModel messageModel, {String img = ''}) {
   return Row(
     children: [
       CircleAvatar(
         radius: 15,
-        backgroundImage: NetworkImage(img),
+        backgroundImage: NetworkImage((img == '') ? Constants.imgProfile : img),
       ),
       const SizedBox(
         width: 10,
