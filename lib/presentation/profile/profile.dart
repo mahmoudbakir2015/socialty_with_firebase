@@ -1,24 +1,16 @@
-import 'dart:io';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:socialty_with_firebase/constants/constants.dart';
 import 'package:socialty_with_firebase/presentation/profile/items.dart';
 import '../../widget/build_post.dart';
 import '../../widget/default_text_form.dart';
 import '../../widget/make_post.dart';
-import 'package:image_picker/image_picker.dart';
 
 // ignore: must_be_immutable
 class Profile extends StatefulWidget {
   final String uid;
-  String? imgWall;
-  String? imgProfile;
-  String name = '';
-  List posts = [];
-  Profile({
+
+  const Profile({
     super.key,
     required this.uid,
   });
@@ -28,6 +20,10 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String imgWall = '';
+  String imgProfile = '';
+  String name = '';
+  List posts = [];
   @override
   void initState() {
     getPosts();
@@ -38,9 +34,9 @@ class _ProfileState extends State<Profile> {
         .listen((event) {
       setState(() {});
 
-      widget.imgWall = event.get('imageWall').toString();
-      widget.imgProfile = event.get('imageProfile').toString();
-      widget.name = event.get('name').toString();
+      imgWall = event.get('imageWall').toString();
+      imgProfile = event.get('imageProfile').toString();
+      name = event.get('name').toString();
     });
 
     super.initState();
@@ -53,85 +49,21 @@ class _ProfileState extends State<Profile> {
         .collection('posts')
         .snapshots()
         .listen((event) {
-      widget.posts = [];
+      posts = [];
       event.docs.forEach((element) {
-        widget.posts.add(element.data());
+        posts.add(element.data());
       });
     });
   }
 
   bool isTap = false;
-  File? file;
-
-  var imagePicker = ImagePicker();
-  saveImageToStorage(
-      {required bool isAvatar, required String imagePath}) async {
-    if (isAvatar == true) {
-      var refStorage = FirebaseStorage.instance
-          .ref('images')
-          .child('avatar')
-          .child(imagePath);
-      await refStorage.putFile(file!);
-      var url = await refStorage.getDownloadURL();
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.uid)
-          .update({
-        'imageProfile': url,
-      });
-      // log(url.toString());
-    } else {
-      var refStorage =
-          FirebaseStorage.instance.ref('images').child('wall').child(imagePath);
-      await refStorage.putFile(file!);
-      var url = await refStorage.getDownloadURL();
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.uid)
-          .update({
-        'imageWall': url,
-      });
-      // log(url.toString());
-    }
-  }
-
-  uploadImage({required bool isCamera, required bool isAvatar}) async {
-    if (isCamera == true) {
-      var imagePicked = await imagePicker.pickImage(source: ImageSource.camera);
-      if (imagePicked != null) {
-        file = File(imagePicked.path);
-        // log(imagePicked.path);
-        var nameImage = basename(imagePicked.path);
-        // log(nameImage);
-        // start upload
-        saveImageToStorage(isAvatar: isAvatar, imagePath: nameImage);
-
-        //end upload
-      } else {}
-    } else {
-      var imagePicked =
-          await imagePicker.pickImage(source: ImageSource.gallery);
-      if (imagePicked != null) {
-        file = File(imagePicked.path);
-        // log(imagePicked.path);
-        var nameImage = basename(imagePicked.path);
-        // log(nameImage);
-        var random = Random().nextInt(100000000);
-        nameImage = '$random$nameImage';
-        // start upload
-        saveImageToStorage(isAvatar: isAvatar, imagePath: nameImage);
-
-        //end upload
-      } else {}
-    }
-  }
 
   TextEditingController controllerName = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    controllerName.text = widget.name;
+    controllerName.text = name;
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
@@ -141,13 +73,17 @@ class _ProfileState extends State<Profile> {
             children: [
               Stack(
                 children: [
-                  buildCover(image: widget.imgWall),
+                  buildCover(image: imgWall),
                   Positioned(
                     bottom: 20,
                     right: 20,
                     child: InkWell(
                       onTap: () {
-                        buildBottomSheet(context: context, isAvatar: false);
+                        buildBottomSheet(
+                          context: context,
+                          isAvatar: false,
+                          uid: widget.uid,
+                        );
                       },
                       child: const CircleAvatar(
                         backgroundColor: Colors.black,
@@ -164,7 +100,7 @@ class _ProfileState extends State<Profile> {
                 children: [
                   buildImgProfile(
                     context: context,
-                    image: widget.imgProfile,
+                    image: imgProfile,
                   ),
                   Positioned(
                     bottom: 0,
@@ -172,7 +108,11 @@ class _ProfileState extends State<Profile> {
                     left: 0,
                     child: InkWell(
                       onTap: () {
-                        buildBottomSheet(context: context, isAvatar: true);
+                        buildBottomSheet(
+                          context: context,
+                          isAvatar: true,
+                          uid: widget.uid,
+                        );
                       },
                       child: const CircleAvatar(
                         radius: 15,
@@ -254,31 +194,30 @@ class _ProfileState extends State<Profile> {
                   );
                 });
           },
-          name: widget.name,
+          name: name,
         ),
         buildMakePost(
           context: context,
-          imgPic: widget.imgProfile,
+          imgPic: imgProfile,
           uid: widget.uid,
-          name: widget.name,
+          name: name,
         ),
         ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (ctx, index) {
             return buildPostInfo(
-              postWriter: widget.name,
-              time: widget.posts[index]['date'],
-              imgPic: widget.imgProfile,
+              postWriter: name,
+              time: posts[index]['date'],
+              imgPic: imgProfile,
               isOnline: true,
               isTap: isTap,
-              postText: widget.posts[index]['text'],
-              postImg: (widget.posts[index]['image'] == '')
-                  ? null
-                  : widget.posts[index]['image'],
-              numLike: widget.posts[index]['numOfLike'],
-              numComment: widget.posts[index]['numOfComment'],
-              numShare: widget.posts[index]['numOfShare'],
+              postText: posts[index]['text'],
+              postImg:
+                  (posts[index]['image'] == '') ? null : posts[index]['image'],
+              numLike: posts[index]['numOfLike'],
+              numComment: posts[index]['numOfComment'],
+              numShare: posts[index]['numOfShare'],
               close: () {},
               option: () {},
               onLike: () {
@@ -294,55 +233,9 @@ class _ProfileState extends State<Profile> {
               height: 5,
             );
           },
-          itemCount: widget.posts.length,
+          itemCount: posts.length,
         ),
       ],
     );
-  }
-
-  Future<dynamic> buildBottomSheet(
-      {required BuildContext context, required bool isAvatar}) {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return SizedBox(
-            height: 100,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
-                  onTap: () {
-                    uploadImage(
-                      isAvatar: isAvatar,
-                      isCamera: true,
-                    );
-                  },
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(Icons.camera),
-                      Text('camera'),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    uploadImage(
-                      isAvatar: isAvatar,
-                      isCamera: false,
-                    );
-                  },
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(Icons.image),
-                      Text('gallery'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
   }
 }
