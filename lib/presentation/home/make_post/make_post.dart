@@ -94,7 +94,9 @@ class _MakePostState extends State<MakePost> {
                     width: 10,
                   ),
                   CircleAvatar(
-                    backgroundImage: NetworkImage(widget.image),
+                    backgroundImage: NetworkImage((widget.image == '')
+                        ? Constants.imgProfile
+                        : widget.image),
                   ),
                 ],
               ),
