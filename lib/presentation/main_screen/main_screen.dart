@@ -5,6 +5,7 @@ import 'package:socialty_with_firebase/constants/constants.dart';
 import 'package:socialty_with_firebase/presentation/auth/sign_in/sign_in.dart';
 import 'package:socialty_with_firebase/presentation/home/home_view.dart';
 import 'package:socialty_with_firebase/shared/cache_helper.dart';
+import '../../shared/configure_fcm.dart';
 import '../chat/chat.dart';
 import '../profile/profile.dart';
 import '../search/search_view.dart';
@@ -22,6 +23,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  @override
+  void initState() {
+    ConfigureMessage.initFirebaseMessaging(context);
+    super.initState();
+  }
+
   int currentIndex = 0;
   List<Widget> screens = [
     Home(

@@ -1,20 +1,15 @@
-import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialty_with_firebase/business_logic/cubit/chat/chat_cubit.dart';
 import 'package:socialty_with_firebase/presentation/splash/splash_view.dart';
 import 'package:socialty_with_firebase/shared/cache_helper.dart';
-import 'package:socialty_with_firebase/shared/observer.dart';
 
-// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   print("Handling a background message");
-// }
+import 'package:socialty_with_firebase/shared/observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   Bloc.observer = MyBlocObserver();
   CacheHelper.init();
   await Firebase.initializeApp();

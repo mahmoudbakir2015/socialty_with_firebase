@@ -1,7 +1,6 @@
-import 'dart:convert';
-import 'dart:developer';
+// ignore_for_file: depend_on_referenced_packages
 
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:convert';
 import 'package:flutter/Material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +8,6 @@ import 'package:socialty_with_firebase/business_logic/cubit/chat/chat_states.dar
 import 'package:socialty_with_firebase/data/model/message_model.dart';
 import 'package:http/http.dart' as http;
 import '../../../constants/constants.dart';
-import '../../../shared/dio_helper.dart';
 
 class ChatCubit extends Cubit<ChateStates> {
   ChatCubit()
@@ -61,15 +59,13 @@ class ChatCubit extends Cubit<ChateStates> {
           .then((DocumentSnapshot ds) {
         title = ds['name'];
       });
-      log(title);
+
       await FirebaseFirestore.instance
           .collection('users')
           .doc(recieverId)
           .get()
           .then((DocumentSnapshot ds) {
         to = ds['Fcm'];
-
-        print(to);
       }).then(
         (value) async => await http.post(
           Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -87,35 +83,15 @@ class ChatCubit extends Cubit<ChateStates> {
               'data': <String, dynamic>{
                 'click_action': 'FLUTTER_NOTIFICATION_CLICK',
                 'id': '1',
-                'status': 'done'
+                'status': 'done',
+                'uid': senderId,
               },
               'to': to.toString(),
             },
           ),
         ),
-
-        //     await DioHelper.postData(
-        //   body: model.text.toString(),
-        //   title: title.toString(),
-        //   to: to.toString(),
-        //   data: <String, dynamic>{
-        //     'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-        //     'id': '1',
-        //     'status': 'done'
-        //   },
-        // ),
       );
 
-      // await DioHelper.postData(
-      //   body: model.text.toString(),
-      //   title: title.toString(),
-      //   to: to.toString(),
-      //   data: <String, dynamic>{
-      //     'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-      //     'id': '1',
-      //     'status': 'done'
-      //   },
-      // );
       scrollToBottom(
         scrollController: scrollController,
       );
@@ -144,7 +120,7 @@ class ChatCubit extends Cubit<ChateStates> {
         .snapshots()
         .listen((event) {
       message = [];
-      event.docs.forEach((element) {
+      for (var element in event.docs) {
         message.add(
           MessageModel.fromJson(
             element.data(),
@@ -152,7 +128,7 @@ class ChatCubit extends Cubit<ChateStates> {
         );
 
         emit(GetMessageSuccessedState());
-      });
+      }
     });
   }
 
